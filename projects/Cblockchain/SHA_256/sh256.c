@@ -7,11 +7,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Step 1 helpers: derive padding sizes / block quantity.
-
-
 
 int main(){
+
+    // step 1
     unsigned char message[] = "HellomynameisEduardo";
     size_t message_len_bytes = strlen((const char *)message);
 
@@ -42,6 +41,31 @@ int main(){
     free(blocks);
     return 0;
 }
+
+// stopped here
+// void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS], 
+//                                    uint32_t W[NUMBER_OF_WORDS_ARRAY])
+// {
+//     int chunck = 1;
+//     for(int i = 0; i <= SIZE_BLOCK_BITS; i += chunck*NUMBER_OF_WORDS_ARRAY)
+// }
+
+// this will make sure we break down the number of blocks we have and
+// loops through each one of them inside the blocks array
+void message_schedule(const uint8_t *blocks, size_t num_blocks)
+{
+    
+    for (size_t block_index = 0; block_index < num_blocks; block_index++) 
+    {
+        size_t block_start = block_index * SIZE_BLOCK_BITS;
+        const uint8_t *individual_block = blocks + block_start;
+        uint32_t words[NUMBER_OF_WORDS_ARRAY]; // NUMBER_OF_BIT_PER_WORD_ARRAY array words
+    
+        // Now block_ptr[0..511] is exactly this one block
+        expand_message_schedule(individual_block, words);
+    }
+}
+
 
 
 /* This function is a the one responsible for performing the padding of */

@@ -20,6 +20,13 @@
 #define SIZE_BLOCK_BITS (SIZE_BLOCK_BYTE * CHAR_BYTE_SIZE_BITS)
 #define SIZE_OF_BLOCK_BITS_WITHOUT_MESSAGE_LENGTH (SIZE_BLOCK_BITS - SIZE_MESSAGE_LENGHT_BLOCK_BIT)
 
+// Words scheduler
+#define NUMBER_OF_WORDS_ARRAY 64
+#define NUMBER_OF_BIT_PER_WORD_ARRAY 32
+
+void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS], uint32_t W[NUMBER_OF_WORDS_ARRAY]);
+void message_schedule(const uint8_t *blocks, size_t num_blocks);
+
 size_t message_size_bits(size_t message_len_bytes);
 size_t find_number_of_zeros_needed(size_t message_bits);
 size_t padded_message_size_bits(size_t message_bits, size_t zero_bits);
