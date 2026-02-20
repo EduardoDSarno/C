@@ -43,14 +43,29 @@ int main(){
 }
 
 // stopped here
-// void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS], 
-//                                    uint32_t W[NUMBER_OF_WORDS_ARRAY])
-// {
-//     int chunck = 1;
-//     for(int i = 0; i <= SIZE_BLOCK_BITS; i += chunck*NUMBER_OF_WORDS_ARRAY)
-// }
+void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS], 
+                                   uint32_t W[NUMBER_OF_WORDS_ARRAY])
+{
+    // so here we have to fill W[0..15] from then block, because
+    // a SIZE_BLOCK_BITS bit block = 16chunkcs x 32 bits
 
-// this will make sure we break down the number of blocks we have and
+    for(int i = 0; i < LENGTH_OF_A_CHUNCK_FROM_THE_BLOCK; i++){
+
+        int start_bit_index = i * NUMBER_OF_BIT_PER_WORD_ARRAY;
+        W[i] = bits_to_u32_be(&block_bits[start_bit_index]);
+
+    }
+
+    // Expand W[16..63] using SHA-256 small sigma functions
+    for (int t = W_OFF_16; t < NUMBER_OF_WORDS_ARRAY; t++) {
+        W[t] = sigma1(W[t - W_OFF_2])
+             + W[t - W_OFF_7]
+             + sigma0(W[t - W_OFF_15])
+             + W[t - W_OFF_16];
+    }
+}
+
+// this will Break the message block into 512-bit chunks. and
 // loops through each one of them inside the blocks array
 void message_schedule(const uint8_t *blocks, size_t num_blocks)
 {
@@ -140,6 +155,16 @@ void byte_to_bits(uint8_t value, uint8_t out_bits[CHAR_BYTE_SIZE_BITS])
     value_to_bits((uint64_t)value, out_bits, CHAR_BYTE_SIZE_BITS);
 }
 
+// this helper is for getting a big-endian bit order, meaning that the first bit is the MSB
+uint32_t bits_to_u32_be(const uint8_t *bits32) {
+
+    uint32_t w = 0;
+    for (int i = 0; i < NUMBER_OF_BIT_PER_WORD_ARRAY; i++) {
+        w = (w << 1) | (uint32_t)(bits32[i] & 1);
+    }
+    return w;
+}
+
 size_t message_size_bits(size_t message_len_bytes)
 {
     return message_len_bytes * CHAR_BYTE_SIZE_BITS;
@@ -169,4 +194,26 @@ void print_bits(const uint8_t block[], size_t block_size)
         putchar((int)('0' + block[i]));
     }
     puts("");
+}
+
+// this moves bits around like permutation
+//sing two different rotates makes each output bit 
+// depend on bits from two different original positions
+static inline uint32_t rotr32(uint32_t x, unsigned n)
+{
+    return (x >> n) | (x << (NUMBER_OF_BIT_PER_WORD_ARRAY - n));
+}
+
+//Combines those three rearranged versions bit-by-bit, 
+// so each output bit becomes the parity of three selected input bits
+static inline uint32_t sigma0(uint32_t x)
+{
+    return rotr32(x, SIGMA0_ROTR_1) ^ rotr32(x, SIGMA0_ROTR_2) ^ (x >> SIGMA0_SHR);
+}
+
+//he small sigmas make sure that bits from earlier words spread 
+//into many later words in a complex way, instead of W[t] being a simple copy/shift of earlier pieces.
+static inline uint32_t sigma1(uint32_t x)
+{
+    return rotr32(x, SIGMA1_ROTR_1) ^ rotr32(x, SIGMA1_ROTR_2) ^ (x >> SIGMA1_SHR);
 }
