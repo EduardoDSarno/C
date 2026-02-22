@@ -50,84 +50,6 @@ int main(){
     return 0;
 }
 
-// stopped here
-void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS], 
-                                   uint32_t W[NUMBER_OF_WORDS_ARRAY])
-{
-    // so here we have to fill W[0..15] from then block, because
-    // a SIZE_BLOCK_BITS bit block = 16chunkcs x 32 bits
-
-    for(int i = 0; i < LENGTH_OF_A_CHUNCK_FROM_THE_BLOCK; i++){
-
-        int start_bit_index = i * NUMBER_OF_BIT_PER_WORD_ARRAY;
-        W[i] = bits_to_u32_be(&block_bits[start_bit_index]);
-
-    }
-
-    // Expand W[16..63] using SHA-256 small sigma functions
-    for (int t = W_OFF_16; t < NUMBER_OF_WORDS_ARRAY; t++) {
-        W[t] = sigma1(W[t - W_OFF_2])
-             + W[t - W_OFF_7]
-             + sigma0(W[t - W_OFF_15])
-             + W[t - W_OFF_16];
-    }
-}
-
-/* Compression function that will take the SHA constants and perform combinations with W(words)
-    to provide the compression of the block following expansion*/
-void compress_message_schedule(uint32_t H[SHA_INITIAL_CONSTANTS_LENGHT], const uint32_t W[NUMBER_OF_WORDS_ARRAY] ){
-    uint32_t v[SHA_INITIAL_CONSTANTS_LENGHT]; // temp array to copy state from H to work w/ them
-
-    // copying the states
-    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
-        v[i] = H[i];
-    }
-
-    for (int t = 0; t < NUMBER_OF_WORDS_ARRAY; t++) {
-        uint32_t T1 = v[7] + BIG_SIGMA1(v[4]) + Ch(v[4], v[5], v[6]) + SHA256_K[t] + W[t];
-        uint32_t T2 = BIG_SIGMA0(v[0]) + Maj(v[0], v[1], v[2]);
-
-        // shift down (h=g, g=f, f=e, d=c, c=b, b=a)
-        v[7] = v[6];
-        v[6] = v[5];
-        v[5] = v[4];
-        v[4] = v[3] + T1;  // e = d + T1
-        v[3] = v[2];
-        v[2] = v[1];
-        v[1] = v[0];
-        v[0] = T1 + T2;    // a = T1 + T2
-
-    }
-
-    // Add the compressed chunk to the current hash value
-    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
-        H[i] += v[i];
-    }
-
-}
-// this will Break the message block into 512-bit chunks. and
-// loops through each one of them inside the blocks array
-void message_schedule(const uint8_t *blocks, size_t num_blocks, uint32_t out_H[SHA256_STATE_WORDS])
-{
-    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
-        out_H[i] = SHA256_H_INIT[i];
-    }
-    
-    for (size_t block_index = 0; block_index < num_blocks; block_index++) 
-    {
-        size_t block_start = block_index * SIZE_BLOCK_BITS;
-        const uint8_t *individual_block = blocks + block_start;
-        uint32_t words[NUMBER_OF_WORDS_ARRAY]; // NUMBER_OF_BIT_PER_WORD_ARRAY array words
-    
-        // Now block_ptr[0..511] is exactly this one block
-        expand_message_schedule(individual_block, words);
-        compress_message_schedule(out_H, words);
-
-    }
-}
-
-
-
 /* This function is a the one responsible for performing the padding of */
 int encode_message(const unsigned char message[], size_t message_len_bytes, uint8_t block_bits[], size_t total_bits){
     size_t j = 0;
@@ -157,6 +79,88 @@ int encode_message(const unsigned char message[], size_t message_len_bytes, uint
     append_size(block_bits, total_bits, message_bits);
 
     return 0;
+}
+
+
+
+
+// this will Break the message block into 512-bit chunks. and
+// loops through each one of them inside the blocks array
+void message_schedule(const uint8_t *blocks, size_t num_blocks, uint32_t out_H[SHA256_STATE_WORDS])
+{
+    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
+        out_H[i] = SHA256_H_INIT[i];
+    }
+    
+    for (size_t block_index = 0; block_index < num_blocks; block_index++) 
+    {
+        size_t block_start = block_index * SIZE_BLOCK_BITS;
+        const uint8_t *individual_block = blocks + block_start;
+        uint32_t words[NUMBER_OF_WORDS_ARRAY]; // NUMBER_OF_BIT_PER_WORD_ARRAY array words
+    
+        // Now block_ptr[0..511] is exactly this one block
+        expand_message_schedule(individual_block, words);
+        compress_message_schedule(out_H, words);
+
+    }
+}
+
+
+
+// stopped here
+void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS], 
+    uint32_t W[NUMBER_OF_WORDS_ARRAY])
+    {
+    // so here we have to fill W[0..15] from then block, because
+    // a SIZE_BLOCK_BITS bit block = 16chunkcs x 32 bits
+
+    for(int i = 0; i < LENGTH_OF_A_CHUNCK_FROM_THE_BLOCK; i++){
+
+    int start_bit_index = i * NUMBER_OF_BIT_PER_WORD_ARRAY;
+    W[i] = bits_to_u32_be(&block_bits[start_bit_index]);
+
+    }
+
+    // Expand W[16..63] using SHA-256 small sigma functions
+    for (int t = W_OFF_16; t < NUMBER_OF_WORDS_ARRAY; t++) {
+        W[t] = sigma1(W[t - W_OFF_2])
+        + W[t - W_OFF_7]
+        + sigma0(W[t - W_OFF_15])
+        + W[t - W_OFF_16];
+    }
+}
+
+/* Compression function that will take the SHA constants and perform combinations with W(words)
+to provide the compression of the block following expansion*/
+void compress_message_schedule(uint32_t H[SHA_INITIAL_CONSTANTS_LENGHT], const uint32_t W[NUMBER_OF_WORDS_ARRAY] ){
+    uint32_t v[SHA_INITIAL_CONSTANTS_LENGHT]; // temp array to copy state from H to work w/ them
+
+    // copying the states
+    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
+        v[i] = H[i];
+    }
+
+    for (int t = 0; t < NUMBER_OF_WORDS_ARRAY; t++) {
+        uint32_t T1 = v[7] + BIG_SIGMA1(v[4]) + Ch(v[4], v[5], v[6]) + SHA256_K[t] + W[t];
+        uint32_t T2 = BIG_SIGMA0(v[0]) + Maj(v[0], v[1], v[2]);
+
+        // shift down (h=g, g=f, f=e, d=c, c=b, b=a)
+        v[7] = v[6];
+        v[6] = v[5];
+        v[5] = v[4];
+        v[4] = v[3] + T1;  // e = d + T1
+        v[3] = v[2];
+        v[2] = v[1];
+        v[1] = v[0];
+        v[0] = T1 + T2;    // a = T1 + T2
+
+    }
+
+    // Add the compressed chunk to the current hash value
+    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
+        H[i] += v[i];
+    }
+
 }
 
 // receives each groups of words state in chuncks of SHA256_STATE_WORDS size and returns the SHA result on 

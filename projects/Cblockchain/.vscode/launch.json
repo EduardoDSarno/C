@@ -6,8 +6,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/eduardosarno/Documents/Code/C/train",
-      "program": "/Users/eduardosarno/Documents/Code/C/train/build/Debug/outDebug"
+      "cwd": "/Users/eduardosarno/Documents/Code/C/projects/Cblockchain",
+      "program": "/Users/eduardosarno/Documents/Code/C/projects/Cblockchain/build/Debug/outDebug"
     }
   ]
 }

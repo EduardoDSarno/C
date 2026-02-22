@@ -40,10 +40,9 @@ return block;
 }
 
 char hash(Block index, 
-        Block data, 
+        Block data[], 
         Block nounce, 
-        Block preivous_block_hash)
+        int previous_block_hash)
 {
     
 }
-

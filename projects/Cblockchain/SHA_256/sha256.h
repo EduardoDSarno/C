@@ -102,6 +102,7 @@ static inline uint32_t Ch(uint32_t x, uint32_t y, uint32_t z);
 
 // finalzing sha
 void sha256_hex(const uint32_t H[SHA256_STATE_WORDS], char out_hex[SHA_OUT_HEX_RESULT_LENGTH]);
+void compress_message_schedule(uint32_t H[SHA_INITIAL_CONSTANTS_LENGHT], const uint32_t W[NUMBER_OF_WORDS_ARRAY] );
 
 
 #endif // SHA256_H
