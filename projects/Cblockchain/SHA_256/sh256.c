@@ -11,7 +11,7 @@
 int main(){
 
     // step 1
-    unsigned char message[] = "HellomynameisEduardo";
+    unsigned char message[] = "";
     size_t message_len_bytes = strlen((const char *)message);
 
     // get initial values with helpers
@@ -37,7 +37,15 @@ int main(){
         return 1;
     }
 
-    print_bits(blocks, total_bits);
+    // Debug: print padded bits
+    // print_bits(blocks, total_bits);
+
+    uint32_t H[SHA256_STATE_WORDS];
+    message_schedule(blocks, num_blocks, H);
+
+    char hex[SHA_OUT_HEX_RESULT_LENGTH];
+    sha256_hex(H, hex);
+    printf("sha256: %s\n", hex);
     free(blocks);
     return 0;
 }
@@ -65,10 +73,45 @@ void expand_message_schedule(const uint8_t block_bits[SIZE_BLOCK_BITS],
     }
 }
 
+/* Compression function that will take the SHA constants and perform combinations with W(words)
+    to provide the compression of the block following expansion*/
+void compress_message_schedule(uint32_t H[SHA_INITIAL_CONSTANTS_LENGHT], const uint32_t W[NUMBER_OF_WORDS_ARRAY] ){
+    uint32_t v[SHA_INITIAL_CONSTANTS_LENGHT]; // temp array to copy state from H to work w/ them
+
+    // copying the states
+    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
+        v[i] = H[i];
+    }
+
+    for (int t = 0; t < NUMBER_OF_WORDS_ARRAY; t++) {
+        uint32_t T1 = v[7] + BIG_SIGMA1(v[4]) + Ch(v[4], v[5], v[6]) + SHA256_K[t] + W[t];
+        uint32_t T2 = BIG_SIGMA0(v[0]) + Maj(v[0], v[1], v[2]);
+
+        // shift down (h=g, g=f, f=e, d=c, c=b, b=a)
+        v[7] = v[6];
+        v[6] = v[5];
+        v[5] = v[4];
+        v[4] = v[3] + T1;  // e = d + T1
+        v[3] = v[2];
+        v[2] = v[1];
+        v[1] = v[0];
+        v[0] = T1 + T2;    // a = T1 + T2
+
+    }
+
+    // Add the compressed chunk to the current hash value
+    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
+        H[i] += v[i];
+    }
+
+}
 // this will Break the message block into 512-bit chunks. and
 // loops through each one of them inside the blocks array
-void message_schedule(const uint8_t *blocks, size_t num_blocks)
+void message_schedule(const uint8_t *blocks, size_t num_blocks, uint32_t out_H[SHA256_STATE_WORDS])
 {
+    for (size_t i = 0; i < SHA_INITIAL_CONSTANTS_LENGHT; i++) {
+        out_H[i] = SHA256_H_INIT[i];
+    }
     
     for (size_t block_index = 0; block_index < num_blocks; block_index++) 
     {
@@ -78,6 +121,8 @@ void message_schedule(const uint8_t *blocks, size_t num_blocks)
     
         // Now block_ptr[0..511] is exactly this one block
         expand_message_schedule(individual_block, words);
+        compress_message_schedule(out_H, words);
+
     }
 }
 
@@ -112,6 +157,17 @@ int encode_message(const unsigned char message[], size_t message_len_bytes, uint
     append_size(block_bits, total_bits, message_bits);
 
     return 0;
+}
+
+// receives each groups of words state in chuncks of SHA256_STATE_WORDS size and returns the SHA result on 
+// the provided buffer
+void sha256_hex(const uint32_t H[SHA256_STATE_WORDS], char out_hex[SHA_OUT_HEX_RESULT_LENGTH])
+{
+    for (size_t i = 0; i < SHA256_STATE_WORDS; i++) {
+        // 8 hex chars per 32-bit word
+        snprintf(out_hex + (i * SHA256_WORD_HEX_CHARS), SHA256_WORD_HEX_BUF, "%08x", H[i]);
+    }
+    out_hex[SHA256_DIGEST_HEX_CHARS] = '\0';
 }
 
 void append_size(uint8_t block[], size_t block_size, uint64_t message_size){
@@ -216,4 +272,25 @@ static inline uint32_t sigma0(uint32_t x)
 static inline uint32_t sigma1(uint32_t x)
 {
     return rotr32(x, SIGMA1_ROTR_1) ^ rotr32(x, SIGMA1_ROTR_2) ^ (x >> SIGMA1_SHR);
+}
+
+// math helper functions provided by model based on SHA256 standars for compression logic
+uint32_t BIG_SIGMA0(uint32_t x) {
+    return rotr32(x, 2) ^ rotr32(x, 13) ^ rotr32(x, 22);
+}
+
+uint32_t BIG_SIGMA1(uint32_t x) {
+    return rotr32(x, 6) ^ rotr32(x, 11) ^ rotr32(x, 25);
+}
+
+// choice helper function
+static inline uint32_t Ch(uint32_t x, uint32_t y, uint32_t z)
+{
+    return (x & y) ^ ((~x) & z);
+}
+
+// maj helper funciton
+static inline uint32_t Maj(uint32_t x, uint32_t y, uint32_t z)
+{
+    return (x & y) ^ (x & z) ^ (y & z);
 }
