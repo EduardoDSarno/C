@@ -1,12 +1,9 @@
-#ifndef transaction_h
-#define transaction_h
+#include "transaction.h"
 
 struct Transaction{
-    int *sender_address;
-    int *receiver_address;
-    char signature;
-    long timestamp;
-    float amount;
+    char sender_address[ADDRESS_LENGTH_BYTES];
+    char receiver_address[ADDRESS_LENGTH_BYTES];
+    char signature[SIGNATURE_LENGTH_BYTES];
+    uint64_t timestamp;
+    uint64_t amount;
 };
-
-#endif
