@@ -1,9 +1,10 @@
-
-
+/**
+ * Note: The returned array must be malloced, assume caller calls free().
+ */
+ 
 #include "stdio.h"
 #include <stdio.h>
 #include <stdlib.h>
-
 int* getConcatenation(int* nums, int numsSize, int* returnSize) {
     int length = numsSize * 2; // 2n length
     int *answer = malloc(length * sizeof(int));
@@ -19,11 +20,4 @@ int* getConcatenation(int* nums, int numsSize, int* returnSize) {
 
     free(answer);
     return answer;
-}
-
-int main(void){
-    int nums[] = {1,2,1,3};
-    int *returnSize;
-    //printf("%lu", sizeof(nums));
-    getConcatenation(nums, sizeof(nums) / 4,returnSize ); // ints are 4 bytes
 }
