@@ -2,9 +2,6 @@
  * Note: The returned array must be malloced, assume caller calls free().
  */
 
-
-// building hashmap
-
 #include "stdio.h"
 #include <stdlib.h>
 #include <string.h>
@@ -62,30 +59,55 @@ Buckets *get(int key,
     return NULL; // if none were found
 }
 
-int* twoSum(int* nums, int numsSize, int target, int *returnSize) {
-    
-    Buckets **hashmap = malloc(sizeof(Buckets *) * numsSize);
-    memset(hashmap, 0, sizeof(Buckets *) * numsSize);
 
-    // to stay in the heap after returning
-    *returnSize = 2;
-    int *result = malloc(sizeof(int) * *returnSize);
-    
-    /* get the complement and insert in the hashmap*/
-    for (int i = 0; i < numsSize; i++){
+int* topKFrequent(int* nums, int numsSize, int k, int* returnSize) {
 
-        Buckets *map = (get(nums[i], numsSize, hashmap));
-        if(map){ // if found
-            result[0] = i;
-            result[1] = map->value;
-            return result;
+    Buckets **all_buckets = calloc(numsSize, sizeof(Buckets*));
+    Buckets **hashmap = calloc(numsSize, sizeof(Buckets *));
+
+    // insert in the hashmap
+     for (int i = 0; i < numsSize; i++){
+        Buckets *map = get(nums[i], numsSize, hashmap);
+        
+        if (!map) {
+            insert(nums[i], 1, numsSize, hashmap);
         }
-
-        // if not match found yet, keep searching
-        int complement = target - nums[i];
-
-        insert(complement, i, numsSize, hashmap);
+        else {
+            map->value++;
+        }
     }
 
-    return result;
+    int total = 0;
+    for (int i = 0; i < numsSize; i++) {
+        Buckets *map = hashmap[i];
+        while (map != NULL) 
+        {
+            all_buckets[total] = map;
+            total++;
+            map = map->next;
+        }
+    }
+
+    int * freq = malloc(k * sizeof(int));
+
+    // loop K times to find the highest frequencies buckets
+    for (int i = 0; i < k; i++) {
+        
+        int max = all_buckets[0]->value;
+        Buckets *max_bucket = all_buckets[0];
+        // looping through buckers
+        for (int j = 0; j < total; j++) {
+            int value = all_buckets[j]->value;
+
+            if (value > max) {
+                max = value;
+                max_bucket = all_buckets[j]; // getting the max key
+            }
+        }
+        freq[i] = max_bucket->key;
+        max_bucket->value = -1;
+
+    }
+     *returnSize = k;
+    return freq;
 }
