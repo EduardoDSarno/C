@@ -11,4 +11,5 @@
 #define TX_COUNT_BYTE_SERIALIZED_SIZE      4  // 4 bytes for transaction count (uint32_t)
 // transactions serialized size depends on the number and format of transactions
 
-size_t serialized_size(const Block *block);
+size_t serialized_size(const Block *);
+size_t serialize_transaciton_size(const Block *);

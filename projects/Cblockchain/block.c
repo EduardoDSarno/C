@@ -1,28 +1,27 @@
 #include "block.h"
+#include <stddef.h>
 
 
 // function to initilize block, it will return block
 // instaed of void
-Block init(int index,
-    size_t timestamp,
-    unsigned char *data,
-    const uint8_t previous_hash[SHA_OUTPUT_BYTES],
-    int nounce,
+Block init(
+    uint32_t index,
+    uint64_t timestamp,
+    const uint8_t previous_hash[SHA256_DIGEST_BYTES],
+    uint32_t nounce,
     const Transaction *transactions,
     size_t transactions_count)
 {
     Block block;
     block.index = index;
     block.timestamp = timestamp;
-    block.data = data;
 
     // copies bytes into the array, no need to assign it
-    memcpy(block.previous_hash, previous_hash, SHA_OUTPUT_BYTES);
+    memcpy(block.previous_hash, previous_hash, SHA256_DIGEST_BYTES);
 
     block.nounce = nounce;
     block.transactions = transactions;
     block.transactions_count = transactions_count;
-
 
     return block;
 }

@@ -9,20 +9,18 @@
 #define SHA_OUTPUT_BYTES 32
 
 typedef struct {
-    int index;
-    size_t timestamp;
-    unsigned char *data;
+    uint32_t index;
+    uint64_t timestamp;
     uint8_t previous_hash[SHA_OUTPUT_BYTES];
-    int nounce;
+    uint32_t nounce;
     const Transaction *transactions;
     size_t transactions_count;
 }Block;
 
-Block init(int index,
-           size_t timestamp,
-           unsigned char *data,
+Block init(uint32_t index,
+           uint64_t timestamp,
            const uint8_t previous_hash[SHA_OUTPUT_BYTES],
-           int nounce,
+           uint32_t nounce,
            const Transaction *transactions,
            size_t transactions_count);
 
