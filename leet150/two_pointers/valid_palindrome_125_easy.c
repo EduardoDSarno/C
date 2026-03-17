@@ -1,5 +1,3 @@
-// gcc -o test test.c && ./test
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,11 +5,11 @@
 
 char* clean_string(char * input, size_t buffer_size){
 
-    char * output = malloc(buffer_size);
+    char * output = malloc(buffer_size + 1); // plus one for null terminator
     int output_curr = 0;
 
     for (int i = 0; i < buffer_size; ++i) {
-        if (isalpha(input[i])) {
+        if (isalnum(input[i])) {
             output[output_curr] = tolower(input[i]);
             output_curr++;
         }
@@ -52,12 +50,4 @@ int isPalindrome(char* s) {
   //printf("yes");
   free(cleaned);
   return 1;
-}
-
-int main(void) {
-
-    char *something = " ";
-
-    size_t size = strlen(something);
-    isPalindrome(something);
 }
