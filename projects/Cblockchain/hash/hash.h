@@ -3,3 +3,5 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+
+int hash(Block *new_block, Block *prev_block);
