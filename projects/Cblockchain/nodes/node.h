@@ -8,5 +8,7 @@
 
 
 
-#define SIZE_PUB_KEY_BYTES 64
+#define SIZE_PUB_KEY_BYTES 33
 #define SIZE_PRIV_KEY_BYTES 32
+
+uint8_t* generate_pub_key_helper(const uint8_t *priv_key, FILE *file);
