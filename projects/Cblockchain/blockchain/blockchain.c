@@ -4,19 +4,7 @@
 #include <string.h>
 
 
-typedef struct BlockChain{
 
-    
-    Block * genesis_block;
-    Block * last_block;
-    Block **blocks; // array of blocks
-    size_t block_count;
-    
-
-    // pointer to an array of SHA256_DIGEST_BYTES bytes
-    uint8_t (* hash_array) [SHA256_DIGEST_BYTES]; 
-
-} BlockChain;
 
 BlockChain *init(){
 
