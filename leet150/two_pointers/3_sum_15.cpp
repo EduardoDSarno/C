@@ -1,6 +1,5 @@
 #include <cstddef>
 #include <cstdio>
-#include <iterator>
 #include <vector>
 #include <algorithm>
 

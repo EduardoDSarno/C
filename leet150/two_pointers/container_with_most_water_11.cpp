@@ -1,5 +1,3 @@
-// g++ -o test test.cpp && ./test
-
 #include <algorithm>
 #include <cstdio>
 #include <vector>
