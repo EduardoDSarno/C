@@ -2,24 +2,13 @@
 
 int main()
 {
-    char something[10][10];
+    int x = 42;
+    int *p = &x;
 
-    // Fill the 2-level array with values
-    for (int i = 0; i < 10; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            something[i][j] = 'A' + (i + j) % 26; // Example: fill with alphabetic pattern
-        }
-    }
+    printf("%p\n", p);   // undefined behavior — might print something like 1606415148
+    printf("%p\n", (void *)p);  // correct — prints something like 0x7ffd5fc2a3bc
+    int const hi = 33;
 
-    for (int i = 0; i < 10; ++i){
-        printf("row address: %p number: %d\n", something[i], i);
-
-        for (int j = 0; j < 10; ++j){
-            //printf(" row %d: %s collum: %d  item is %c\n",i, something[i],j,something[j][i]);
-            printf("item %c  row[%d] collum[%d]\n", something[i][j],i,j);
-            
-         }
-     }
-
-     return 0;
+    
+    int fn(int array[], int *array2);
 }

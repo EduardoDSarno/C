@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /*
@@ -17,6 +18,12 @@ typedef struct Bst {
      
 } Bst;
 
+/*
+THis alghortim runs on O(n) or O(h)
+ since it recursive step will be going down
+ (moving left or right) on the tree
+ the worst case scenario (time complexity)
+ will be the ones mentioned above */
 Bst * search_tree(Bst *tree, int key){
 
     if (tree == NULL) {
@@ -38,6 +45,28 @@ Bst * search_tree(Bst *tree, int key){
     }
 }
 
+void *insert(Bst * parent, int key, Bst **leg)
+{
+    if (parent == NULL) return NULL;
+    
+    /* Checking if one of the legs is null (left or right)*/
+    if(*leg == NULL){
+        Bst *new = malloc(sizeof(Bst));
+
+        new->left = NULL;
+        new->right = NULL;
+        new->parent = parent;
+        new->key = key;
+
+        *leg = new;
+    }
+
+    // go left
+    if (parent->key > key) {
+        insert(parent->left, key, leg);
+    }
+
+}
 int main(void){
     return 0;
 }

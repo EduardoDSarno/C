@@ -8,15 +8,20 @@
 TCPServer *server_init(const uint16_t port,const uint32_t ipv4)
 {
     TCPServer *server = safe_malloc(sizeof(TCPServer));
+    
 
     Socket *server_socket;
 
     server_socket = socket_init(port, ipv4);
 
-    if (server_socket == NULL) {
-        fprintf(stderr, "Error Creating server Sockert");
+    if(is_null(server_socket, "Error Creating server Sockert")){
         goto cleanup;
     }
+
+    server->server = *server_socket;
+    server->clients = NULL;
+    server->clients_count = 0;
+    server->max_clients = MAX_CLIENTS;
 
 
     // free(server_socket)

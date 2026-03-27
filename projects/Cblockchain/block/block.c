@@ -17,8 +17,7 @@ Block *block_init(
     Block *block = NULL;
     block = safe_malloc(sizeof(Block));
 
-    if(block == NULL){
-        fprintf(stderr, "Erro building the block, memory allocated is null");
+    if(is_null(block, "Erro building the block, memory allocated is null")){
         goto cleanup;
     }
     block->index = index;

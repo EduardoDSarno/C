@@ -66,3 +66,12 @@ void print_memory_stats(void) {
     printf("Active bytes:       %zu\n", bytes_alloc);
     printf("====================\n");
 }
+
+/*Function to replace the null checks*/
+int is_null(void *pointer, const char *message){
+    if(pointer == NULL){
+        fprintf(stderr, "%s", message);
+        return 1;
+    }
+    return 0;
+}

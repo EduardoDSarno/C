@@ -18,8 +18,7 @@ Node *node_init(uint8_t pub_key [SIZE_PUB_KEY_BYTES],
     Node *new_node = safe_malloc(sizeof(Node));
     uint8_t *temp_pubkey = NULL;
 
-    if (new_node == NULL) {
-        printf("Failed to generate randomness\n");
+    if(is_null(new_node, "Failed to generate randomness\n")){
         goto cleanup;
     }
     
@@ -40,8 +39,7 @@ Node *node_init(uint8_t pub_key [SIZE_PUB_KEY_BYTES],
     // generate pub key
     temp_pubkey = generate_pub_key_helper(new_node->priv_key, file);
 
-    if(temp_pubkey == NULL){
-        fprintf(stderr, "error creating temp pub key");
+    if(is_null(temp_pubkey, "error creating temp pub key")){
         goto cleanup;
     }
 
@@ -115,8 +113,7 @@ uint8_t* generate_pub_key_helper(const uint8_t *priv_key, FILE *file)
 
     len = SIZE_PUB_KEY_BYTES;
     compressed_pubkey = safe_malloc(sizeof(uint8_t) * len);
-    if (compressed_pubkey == NULL) {
-        fprintf(stderr, "Failied generating compressed pub key");
+    if(is_null(compressed_pubkey, "Failied generating compressed pub key")){
         goto cleanup;
     }
 

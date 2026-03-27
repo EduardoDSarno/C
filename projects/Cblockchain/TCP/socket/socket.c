@@ -12,8 +12,7 @@
 Socket *socket_init(const uint16_t port,const uint32_t ipv4)
 {
     Socket * new_socket = safe_malloc(sizeof(Socket));
-    if (new_socket == NULL) {
-        fprintf(stderr, "Error Creating new Socket");
+    if(is_null(new_socket, "Error Creating new Socket")){
         goto cleanup;
     }
 
