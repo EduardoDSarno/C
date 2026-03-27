@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <stdio.h>
 
 // will have constant since it is learning project
 // I beleive in reality it would be dinamically allocated based on the type of node
@@ -27,4 +28,9 @@ typedef struct TCPServer
     ServerState state;
 
 } TCPServer;
+
+TCPServer *server_init(const uint16_t port,const uint32_t ipv4);
+int server_connect(TCPServer * const server);
+int server_listen(TCPServer * const server, const int backlog);
+int server_bind(TCPServer * const server);
 

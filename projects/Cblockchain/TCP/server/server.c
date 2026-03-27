@@ -1,5 +1,5 @@
 #include "server.h"
-#include <stdio.h>
+
 
 /* This function will initiate a server
     it will return a pointer to the Server*/

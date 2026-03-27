@@ -33,4 +33,8 @@ a port and IPV4 and will generate a socket using the defaoult C fn socket. That 
 server/server.c
 server/server.h
 
-These fils are repon
+These fils are reponsible for setting all the server attributes and it's functions to connect
+-The function BIND, will create the server struct inside the kernel and it will bind itself with the serve Socket
+-The listen function uses just C listen function and it is a wrapper to fit our strucutre
+-THe function connect is where most things heppens, we call connect C function with our file descriptor (of the server socket)
+    and the address of the future client socket and it's size, so the OS can set up the client side Socket and finish the connection
