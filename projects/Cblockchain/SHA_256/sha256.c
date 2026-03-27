@@ -1,5 +1,5 @@
 #include "sha256.h"
-//#include <cstring>
+#include "../utils/utils.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -22,19 +22,20 @@ int sha256_hash_bytes(const uint8_t *message, size_t message_len_bytes, uint32_t
     size_t total_bits = padded_message_size_bits(n_bits, k);
     size_t num_blocks = block_count_from_total_bits(total_bits);
 
-    uint8_t *blocks = calloc(total_bits, sizeof(uint8_t));
+    uint8_t *blocks = safe_malloc(total_bits * sizeof(uint8_t));
     if (blocks == NULL) {
         fprintf(stderr, "Failed to allocate %zu bits buffer\n", total_bits);
         return 1;
     }
+    memset(blocks, 0, total_bits * sizeof(uint8_t));
 
     if (encode_message((const unsigned char *)message, message_len_bytes, blocks, total_bits) != 0) {
-        free(blocks);
+        safe_free(blocks, total_bits * sizeof(uint8_t));
         return 1;
     }
 
     message_schedule(blocks, num_blocks, out_H);
-    free(blocks);
+    safe_free(blocks, total_bits * sizeof(uint8_t));
     return 0;
 }
 

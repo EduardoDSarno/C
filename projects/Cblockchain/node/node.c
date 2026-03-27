@@ -1,4 +1,5 @@
 #include "node.h"
+#include "../utils/utils.h"
 #include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -14,7 +15,7 @@ Node *node_init(uint8_t pub_key [SIZE_PUB_KEY_BYTES],
                 uint16_t port,
                 uint32_t ipv4)
 {
-    Node *new_node = malloc(sizeof(Node));
+    Node *new_node = safe_malloc(sizeof(Node));
     uint8_t *temp_pubkey = NULL;
 
     if (new_node == NULL) {
@@ -64,12 +65,12 @@ Node *node_init(uint8_t pub_key [SIZE_PUB_KEY_BYTES],
     }
 
     fclose(file);
-    free(temp_pubkey);
+    safe_free(temp_pubkey, sizeof(uint8_t) * SIZE_PUB_KEY_BYTES);
     return new_node;
 
     cleanup:
-        if(temp_pubkey != NULL) free(temp_pubkey);
-        if(new_node != NULL) free(new_node);
+        if(temp_pubkey != NULL) safe_free(temp_pubkey, sizeof(uint8_t) * SIZE_PUB_KEY_BYTES);
+        if(new_node != NULL) safe_free(new_node, sizeof(Node));
         if(file != NULL)        fclose(file);
         return NULL;
 
@@ -113,7 +114,7 @@ uint8_t* generate_pub_key_helper(const uint8_t *priv_key, FILE *file)
     size_t len;
 
     len = SIZE_PUB_KEY_BYTES;
-    compressed_pubkey = malloc(sizeof(uint8_t) * len);
+    compressed_pubkey = safe_malloc(sizeof(uint8_t) * len);
     if (compressed_pubkey == NULL) {
         fprintf(stderr, "Failied generating compressed pub key");
         goto cleanup;
@@ -128,7 +129,7 @@ uint8_t* generate_pub_key_helper(const uint8_t *priv_key, FILE *file)
     return compressed_pubkey;
 
     cleanup:
-        if(compressed_pubkey != NULL) free(compressed_pubkey);
+        if(compressed_pubkey != NULL) safe_free(compressed_pubkey, sizeof(uint8_t) * SIZE_PUB_KEY_BYTES);
         if(ctx != NULL) secp256k1_context_destroy(ctx);
         return NULL;
 

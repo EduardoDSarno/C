@@ -1,4 +1,5 @@
 #include "block.h"
+#include "../utils/utils.h"
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +15,7 @@ Block *block_init(
     size_t transactions_count)
 {
     Block *block = NULL;
-    block = malloc(sizeof(Block));
+    block = safe_malloc(sizeof(Block));
 
     if(block == NULL){
         fprintf(stderr, "Erro building the block, memory allocated is null");
@@ -40,7 +41,7 @@ Block *block_init(
     return block;
 
     cleanup:
-        free(block);
+        if (block != NULL) safe_free(block, sizeof(Block));
         return NULL;
 
 }

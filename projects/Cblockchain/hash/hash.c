@@ -1,4 +1,5 @@
 #include "hash.h"
+#include "../utils/utils.h"
 
 /* This function will take a new block and the old and it will hash the previous block
     and add the hash to the new block 'previous hash' field
@@ -10,7 +11,7 @@ int hash(Block *new_block, Block *prev_block)
     size_t block_size;
     block_size = serialized_size(prev_block);
 
-    uint8_t *serialized_buffer = malloc(sizeof(uint8_t) * block_size);
+    uint8_t *serialized_buffer = safe_malloc(sizeof(uint8_t) * block_size);
 
      if (serialized_buffer == NULL) {
         fprintf(stderr, " Error: Seralized Buffer is nNULL");
@@ -35,7 +36,7 @@ int hash(Block *new_block, Block *prev_block)
 
 
     cleanup:
-        free(serialized_buffer);
+        if (serialized_buffer != NULL) safe_free(serialized_buffer, sizeof(uint8_t) * block_size);
         // preventing error message in sucessefull calls
         if(result == 0) fprintf(stderr, "Error: That was a error Hashing your Block");
         return result;

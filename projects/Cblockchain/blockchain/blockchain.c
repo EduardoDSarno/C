@@ -1,4 +1,5 @@
 #include "blockchain.h"
+#include "../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +32,7 @@ BlockChain *init(){
     }
 
     BlockChain *c_chain = NULL;
-    c_chain = malloc(sizeof(BlockChain));
+    c_chain = safe_malloc(sizeof(BlockChain));
 
     if(c_chain == NULL){
         fprintf(stderr, "Error: Creation of new blockchain failed in Blockchain Init");
@@ -40,7 +41,7 @@ BlockChain *init(){
     c_chain->genesis_block = new_block;
     c_chain->last_block = new_block;
 
-    c_chain->blocks = malloc(sizeof(Block *));
+    c_chain->blocks = safe_malloc(sizeof(Block *));
     if (c_chain->blocks == NULL) {
         fprintf(stderr, "Error: Creation of blocks failed");
         goto cleanup;
@@ -51,7 +52,7 @@ BlockChain *init(){
     c_chain->block_count = 1;
     // leaves on the heap, relloc for every new block
     c_chain->hash_array = NULL;
-    c_chain->hash_array = malloc(SHA256_DIGEST_BYTES * sizeof(uint8_t));
+    c_chain->hash_array = safe_malloc(SHA256_DIGEST_BYTES * sizeof(uint8_t));
 
     if(c_chain->hash_array == NULL){
         fprintf(stderr, "Error: Creation of new hash array failed in Blockchain Init");
@@ -64,11 +65,11 @@ BlockChain *init(){
     cleanup:
         if(c_chain != NULL) 
         {
-            free(c_chain->hash_array);
-            free(c_chain->blocks);
+            if (c_chain->hash_array != NULL) safe_free(c_chain->hash_array, SHA256_DIGEST_BYTES * sizeof(uint8_t));
+            if (c_chain->blocks != NULL) safe_free(c_chain->blocks, sizeof(Block *));
         }
-        free(c_chain);
-        free(new_block);
+        if (c_chain != NULL) safe_free(c_chain, sizeof(BlockChain));
+        if (new_block != NULL) safe_free(new_block, sizeof(Block));
         return NULL;
 }
 
@@ -80,7 +81,9 @@ BlockChain *init(){
     */
 int inser_block(Block * new_block, BlockChain* blockchain){
 
-    void *temp_blocks = realloc(blockchain->blocks, sizeof(Block *) * (blockchain->block_count + 1));
+    void *temp_blocks = safe_realloc(blockchain->blocks,
+                                     sizeof(Block *) * (blockchain->block_count + 1),
+                                     sizeof(Block *) * blockchain->block_count);
 
     if (temp_blocks == NULL) {
         fprintf(stderr, "Error: An error occurred when trying to reallocate memory for new block");
@@ -89,8 +92,9 @@ int inser_block(Block * new_block, BlockChain* blockchain){
     blockchain->blocks = temp_blocks;
     blockchain->blocks[blockchain->block_count] = new_block;
     
-    void *temp_hash_array = realloc(blockchain->hash_array, 
-                        (blockchain->block_count + 1) * SHA256_DIGEST_BYTES * sizeof(uint8_t));
+    void *temp_hash_array = safe_realloc(blockchain->hash_array,
+                        (blockchain->block_count + 1) * SHA256_DIGEST_BYTES * sizeof(uint8_t),
+                        blockchain->block_count * SHA256_DIGEST_BYTES * sizeof(uint8_t));
 
     if (temp_hash_array == NULL){
         fprintf(stderr, "Error: An error occurred when trying to reallocate memory for hashing");

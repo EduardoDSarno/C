@@ -32,13 +32,18 @@ void *safe_realloc(void * dest_pointer , size_t bytes_to_reallocate, size_t old_
         return NULL;
     }
 
+    if(old_size > bytes_to_reallocate){
+        fprintf(stderr, "Error Reallocating memory: Bytes to reallocate < old bytes");
+        return dest_pointer;
+    }
+
     void * pointer = realloc(dest_pointer, bytes_to_reallocate);
 
      if (pointer == NULL) {
         fprintf(stderr, "Error Reallocating memory");
         return NULL;
     }
-
+    
     bytes_alloc += (bytes_to_reallocate - old_size);
 
     return pointer;

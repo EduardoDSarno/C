@@ -1,4 +1,5 @@
 #include "socket.h"
+#include "../../utils/utils.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
@@ -10,7 +11,7 @@
     */
 Socket *socket_init(const uint16_t port,const uint32_t ipv4)
 {
-    Socket * new_socket = malloc(sizeof(Socket));
+    Socket * new_socket = safe_malloc(sizeof(Socket));
     if (new_socket == NULL) {
         fprintf(stderr, "Error Creating new Socket");
         goto cleanup;
@@ -30,6 +31,6 @@ Socket *socket_init(const uint16_t port,const uint32_t ipv4)
     return new_socket;
 
     cleanup:
-        if (new_socket != NULL) free(new_socket);
+        if (new_socket != NULL) safe_free(new_socket, sizeof(Socket));
         return NULL;
 }
