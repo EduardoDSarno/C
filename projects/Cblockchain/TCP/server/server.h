@@ -1,3 +1,6 @@
+#ifndef SERVER_H
+#define SERVER_H
+
 #include "../socket/socket.h"
 #include <stddef.h>
 #include "../../utils/utils.h"
@@ -5,7 +8,6 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <stdio.h>
 
 // will have constant since it is learning project
 // I beleive in reality it would be dinamically allocated based on the type of node
@@ -34,3 +36,4 @@ int server_connect(TCPServer * const server);
 int server_listen(TCPServer * const server, const int backlog);
 int server_bind(TCPServer * const server);
 
+#endif

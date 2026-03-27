@@ -1,3 +1,6 @@
+#ifndef SOCKET_H
+#define SOCKET_H
+
 #include <stdint.h>
 
 typedef struct Socket{
@@ -10,3 +13,5 @@ typedef struct Socket{
 
 // Will return a pointer of the new socket created
 Socket *socket_init(const uint16_t, const uint32_t);
+
+#endif
