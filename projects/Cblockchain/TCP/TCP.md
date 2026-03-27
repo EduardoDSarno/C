@@ -28,3 +28,9 @@ socket/socket.h
 
 This 2 files will have the responsability of Creating and initliazing a Socket, that will receive
 a port and IPV4 and will generate a socket using the defaoult C fn socket. That generates a file descriptor for it, Which for now with my basic understading is a contract that happens betwee nthe program and the kernel  since the program itself does not have access to the functionalities nescessaries to make a socket
+
+
+server/server.c
+server/server.h
+
+These fils are repon
