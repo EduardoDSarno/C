@@ -18,13 +18,13 @@ void send_ack_packet(struct sockaddr_in source, struct sockaddr_in destination,
     send_packet(source, destination, server_header, (TH_SYN | TH_ACK), ack_num);
 }
 
-/*This funciton will listen to packages from SYN it will create a buffer called recvfrom
-  put the result on the buffer and the return the value of the buffer casted to the structure
-  of the tcp header, caller must free*/
+/* Wrapper will return the header stuct */
 struct tcphdr * listen_syn_package(){
     return listen_packet(TH_SYN);
 }
 
+/* This case we will just be printing connected, in reality we would start exahcnge data
+   I might implement this later*/
 void listen_ack_package(){
     listen_packet(TH_ACK);
     printf("CONNECTED");

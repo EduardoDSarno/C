@@ -1,6 +1,7 @@
 // gcc main.c -o main && sudo ./main
 
 #include "client/client.h"
+#include "server/server.h"
 #include "shared/helpers.h"
 #include <time.h>
 #include <stdlib.h>
@@ -17,10 +18,27 @@ int main(void){
     struct sockaddr_in source = addr_init(&src_port, &source_ipv4);
     struct sockaddr_in destination = addr_init(&dest_port, &destination_ipv4);
 
-    struct tcphdr *header = malloc(sizeof(struct tcphdr));
+    // 1: send firsrt SYN
+    struct tcphdr *client_header = malloc(sizeof(struct tcphdr));
+    send_sync_packet(source, destination, client_header);
 
-    send_sync_packet(source, destination, header);
+    // pt2 Server listens for SYN, then sends SYNCACK
+    struct tcphdr *received_syn = listen_syn_package();  // mallocs inside
+    struct tcphdr *server_header = malloc(sizeof(struct tcphdr));
+    send_ack_packet(source, destination, received_syn, server_header);
 
-    free(header);
+    // pt3 Client listens for SYN-ACK, then send final ACK
+    struct tcphdr *received_syn_ack = listen_packet(TH_SYN | TH_ACK);
+    send_syn_ack_pack(source, destination, client_header, received_syn_ack);
+
+    // pt4 Server listens for ACK and print if sucess
+    listen_ack_package();
+
+
+    free(client_header);
+    free(received_syn);
+    free(server_header);
+    free(received_syn_ack);
+ 
 
 }

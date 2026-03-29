@@ -26,12 +26,12 @@ void send_packet(struct sockaddr_in source, struct sockaddr_in destination,
     uint16_t checksum = check_sum(buffer, &size);
 
     header->th_sum = checksum;
-    size_t bytes_send = sendto(sockfd, header, sizeof(struct tcphdr), 0, (struct sockaddr *)&destination, dest_len);
+    int bytes_send = sendto(sockfd, header, sizeof(struct tcphdr), 0, (struct sockaddr *)&destination, dest_len);
 
     if (bytes_send == -1) {
     perror("sendto failed");
     }
-    printf("%lu", bytes_send);
+    printf("%d", bytes_send);
 
     free(buffer);
 }
