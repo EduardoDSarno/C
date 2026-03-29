@@ -9,3 +9,20 @@ void send_sync_packet(struct sockaddr_in source, struct sockaddr_in destination,
 
     send_packet(source, destination, header, TH_SYN, 0);
 }
+
+void send_ack_packet(struct sockaddr_in source, struct sockaddr_in destination,
+                                                struct tcphdr *client_header,
+                                                struct tcphdr *server_header)
+{
+
+    // all of these conversions are becasue I am in a MAC that uses little endian, 
+    // so I need to convert it (since the netwrok uses big endian) and do the math
+    // and then convert it back
+    uint32_t seq = ntohl(client_header->th_seq) + 1;
+    client_header->th_seq = htonl(seq);
+
+    uint32_t ack = ntohl(server_header->th_seq) + 1;
+
+    send_packet(source, destination, client_header, TH_ACK, ack);
+
+}

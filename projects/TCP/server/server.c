@@ -26,8 +26,11 @@ void send_ack_packet(struct sockaddr_in source, struct sockaddr_in destination,
 {
 
     uint32_t ack_num = ntohl(client_header->th_seq) + 1;
+    
     uint32_t seq_number = htonl(rand());
     server_header->th_seq = seq_number;
 
+    /*For the flags heere since each flag is in one opsiton (0-7) as bits in the byte
+      when we or them is the same as adding them toghter to the flag from SYN because SYN-ACK*/
     send_packet(source, destination, server_header, (TH_SYN | TH_ACK), ack_num);
 }
