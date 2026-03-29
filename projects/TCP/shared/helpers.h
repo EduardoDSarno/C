@@ -12,9 +12,9 @@
 #include <netinet/tcp.h>
 #include "pseIPHeader.h"
 
-uint16_t* format_check_sum(struct tcphdr *header, uint8_t *message_buffer, size_t buffer_size,
-        uint32_t ipv4_scr,
-        uint32_t ipv4_dest,
+uint16_t* format_check_sum(struct tcphdr *header, const uint8_t *message_buffer, size_t buffer_size,
+        const uint32_t ipv4_scr,
+        const uint32_t ipv4_dest,
         size_t *out_size_buffer);
 
 uint16_t check_sum(uint16_t *buffer, size_t *size);

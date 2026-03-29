@@ -15,22 +15,10 @@ int main(void){
 
 
     struct tcphdr *header = malloc(sizeof(struct tcphdr));
-    header->th_dport = htons(dest_port);
-    header->th_sport = htons(src_port);
-    header->th_off   = sizeof(struct tcphdr) / 4; // 32 bit word (uni
     
-    // getting formmated data on buffer
-    size_t size = 0;
-    uint16_t * buffer = format_check_sum(header, message, 0, source_ipv4,destination_ipv4, &size);
 
-    // check summing
-    uint16_t checksum = check_sum(buffer, &size);
+    send_sync_packet(header, src_port, &dest_port, &destination_ipv4,&source_ipv4, message);
 
-    header->th_sum = checksum;
-
-    send_sync_packet(header, src_port, dest_port, destination_ipv4);
-
-    free(buffer);
     free(header);
 
 }
