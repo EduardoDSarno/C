@@ -1,9 +1,6 @@
 // gcc main.c -o main && sudo ./main
 
-#include "client/header.h"
-#include "shared/helpers.h"
-#include <stdlib.h>
-#include <string.h>
+#include "header.h"
 
 int main(void){
 
@@ -17,7 +14,8 @@ int main(void){
     struct tcphdr *header = malloc(sizeof(struct tcphdr));
     header->th_dport = htons(dest_port);
     header->th_sport = htons(src_port);
-    header->th_off   = sizeof(struct tcphdr) / 4; // 32 bit word (uni
+    header->th_off   = sizeof(struct tcphdr) / 4; // 32 bit word (unix def )
+
     
     // getting formmated data on buffer
     size_t size = 0;

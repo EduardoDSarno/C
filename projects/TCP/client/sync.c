@@ -24,4 +24,3 @@ void send_sync_packet(struct tcphdr *header, unsigned int src_port,
    printf("%lu", bytes_send);
 
 }
-

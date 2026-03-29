@@ -65,4 +65,3 @@ uint16_t check_sum(uint16_t * buffer, size_t * size){
     return new_sum;
 
 }
-

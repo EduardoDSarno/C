@@ -1,7 +1,7 @@
 #ifndef MY_HEADER_H
 #define MY_HEADER_H
 
-#include "helpers/helpers.h"
+#include "../shared/helpers.h"
 
 void send_sync_packet(struct tcphdr *header, unsigned int src_port,
                                              unsigned int dest_port,

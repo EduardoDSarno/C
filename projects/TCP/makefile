@@ -1,7 +1,7 @@
 CC      = gcc
 CFLAGS  = -Wall -Wextra
 
-SRCS    = main.c sync.c helpers/checksum.c helpers/pseIPHeader.c
+SRCS    = client/main.c client/sync.c shared/checksum.c shared/pseIPHeader.c
 OBJS    = $(SRCS:.c=.o)
 TARGET  = tcp
 
@@ -10,10 +10,10 @@ all: $(TARGET)
 $(TARGET): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
-main.o: main.c header.h helpers/helpers.h helpers/pseIPHeader.h
-sync.o: sync.c header.h helpers/helpers.h helpers/pseIPHeader.h
-helpers/checksum.o: helpers/checksum.c helpers/helpers.h helpers/pseIPHeader.h
-helpers/pseIPHeader.o: helpers/pseIPHeader.c helpers/pseIPHeader.h
+client/main.o: client/main.c client/header.h shared/helpers.h shared/pseIPHeader.h
+client/sync.o: client/sync.c client/header.h shared/helpers.h shared/pseIPHeader.h
+shared/checksum.o: shared/checksum.c shared/helpers.h shared/pseIPHeader.h
+shared/pseIPHeader.o: shared/pseIPHeader.c shared/pseIPHeader.h
 
 clean:
 	rm -f $(OBJS) $(TARGET)
