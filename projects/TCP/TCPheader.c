@@ -1,7 +1,6 @@
 // gcc TCPheader.c -o TCPheader && sudo ./TCPheader
 
 
-#include <cstdio>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -41,33 +40,41 @@ void send_sync_packet(struct tcphdr *header, unsigned int src_port,
     a pointer to this buffer with the formmated data to perfrom checksum*/
 uint16_t* format_check_sum(struct tcphdr *header, uint8_t * message_buffer,  size_t buffer_size,
                                                                      uint32_t ipv4_scr,
-                                                                     uint32_t ipv4_dest)
+                                                                     uint32_t ipv4_dest,
+                                                                     size_t *out_size_buffer)
 {
+     size_t size = sizeof(struct tcphdr) +  buffer_size + sizeof(PseudoIpHeader);
+
     // this should hold the whole lenght of the sum for the calculation.
-    uint16_t *temp_buffer = malloc(sizeof(struct tcphdr) + sizeof(PseudoIpHeader) + buffer_size);
+    uint16_t *temp_buffer = malloc(size + 1); // + 1 for possible allocation of padding
     if (temp_buffer == NULL) {
         fprintf(stderr, "Error allocating memory");
         return NULL;
     }
 
-    
-    memcpy(temp_buffer, header, sizeof(struct tcphdr));
-    memcpy(temp_buffer + sizeof(struct tcphdr), message_buffer, buffer_size);
+    // cast temp buffer because with uint16 it will advance 2 bytes foward in the function insated of 1
+    memcpy((uint8_t *)temp_buffer, header, sizeof(struct tcphdr));
+    memcpy((uint8_t *)temp_buffer + sizeof(struct tcphdr), message_buffer, buffer_size);
 
     uint16_t segment  = sizeof(struct tcphdr) + buffer_size;
     PseudoIpHeader *pseud_ip_header = psdIpHeader_intit(ipv4_scr, ipv4_dest, IPPROTO_TCP, segment);
 
-    memcpy(temp_buffer + sizeof(struct tcphdr) +  buffer_size, pseud_ip_header, sizeof(PseudoIpHeader));
+    memcpy((uint8_t *)temp_buffer + sizeof(struct tcphdr) +  buffer_size, pseud_ip_header, sizeof(PseudoIpHeader));
 
-    // checking if it is odd or even for padding
-    
+   
+
+    if (size % 2 == 1) {
+        memset((uint8_t *)temp_buffer + size, 0, 1);
+        size+=1;
+    }
 
     free(pseud_ip_header);
 
+    out_size_buffer = &size;
     return temp_buffer;
 }
 
-uint16_t check_sum(uint16_t * buffer){
+uint16_t check_sum(uint16_t * buffer, size_t * size){
 
 
 }
