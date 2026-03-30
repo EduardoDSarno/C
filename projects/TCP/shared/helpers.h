@@ -14,6 +14,15 @@
 
 #define MAX_BUFFER_SIZE 65536
 
+typedef struct {
+    struct sockaddr_in source;
+    struct sockaddr_in destination;
+    struct tcphdr     *header;
+} ConnectionData;
+
+ConnectionData *connection_init(unsigned int src_port, uint32_t src_ipv4,
+                                unsigned int dest_port, uint32_t dest_ipv4);
+
 uint16_t* format_check_sum(struct tcphdr *header, const uint8_t *message_buffer, size_t buffer_size,
         const uint32_t ipv4_scr,
         const uint32_t ipv4_dest,

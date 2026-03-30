@@ -9,3 +9,26 @@ struct sockaddr_in addr_init(const unsigned int *port,const  uint32_t  *ipv4_add
 
     return dest;
 }
+
+/* Initializes a ConnectionData struct with addresses and an empty header, caller must free */
+ConnectionData *connection_init(unsigned int src_port, uint32_t src_ipv4,
+                                unsigned int dest_port, uint32_t dest_ipv4)
+{
+    ConnectionData *conn = malloc(sizeof(ConnectionData));
+    if (conn == NULL) {
+        fprintf(stderr, "Error allocating ConnectionData");
+        return NULL;
+    }
+
+    conn->source      = addr_init(&src_port, &src_ipv4);
+    conn->destination  = addr_init(&dest_port, &dest_ipv4);
+    conn->header       = malloc(sizeof(struct tcphdr));
+    if (conn->header == NULL) {
+        fprintf(stderr, "Error allocating tcphdr");
+        free(conn);
+        return NULL;
+    }
+    memset(conn->header, 0, sizeof(struct tcphdr));
+
+    return conn;
+}
