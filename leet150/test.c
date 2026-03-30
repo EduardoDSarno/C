@@ -1,72 +1,54 @@
 // gcc -o test test.c && ./test
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
 #include <stdio.h>
 #include <stdlib.h>
-int* twoSum(int* numbers, int numbersSize, int target, int* returnSize) {
-    
-    *returnSize = 2;
-    int * return_array = malloc(sizeof(int) * *returnSize);
+#include <stdio.h>
+int maxProfit(int* prices, int pricesSize){
 
-    for (int i = 0; i < numbersSize; ++i) 
+  int cheapest = prices[0];
+  int max_profit = 0;
+
+  // find cheapes
+  for(int i = 0; i < pricesSize; ++i){
+    
+    if(prices[i] < cheapest)
     {
-    
-      int second_target = 0;
-      second_target = target - numbers[i];
-      return_array[0] = i + 1; // result 1
-      
-      //printf("first num %d\n", i);
-
-      int high = numbersSize - 1;
-      int low = i + 1; // so we ignore the seen indexes
-
-      while (low <= high) {
-        int mid = low + (high - low) / 2; // to avoud overflow
-
-        if (numbers[mid] == second_target) 
-        {
-          
-          return_array[1] = mid + 1; // result 2
-          return return_array;
-          //printf(" mid %d\n", mid  + 1);
-        }
-        else if (numbers[mid] < second_target) {
-          low = mid + 1;
-        }
-        else {
-          high = mid - 1;
-        }
-          
-      } 
+      cheapest = prices[i];
     }
-    return return_array;
+    else // check for max profit
+    {
+      int profit = prices[i] - cheapest;
+
+      if (profit > max_profit) {
+        max_profit = profit;
+      }
+    }
+  }
+  return max_profit;
+
 }
 
-// int main(void) {
-//     int numbers[] = {2,7,11,15};
-//     int target = 9;
-//     int numbersSize = sizeof(numbers) / sizeof(numbers[0]);
-//     int returnSize;
+// int maxProfit(int* prices, int pricesSize) {
+//     int result = 0;
+    
+//     for(int i = 0; i < pricesSize; ++i){
+//         int profit = 0;
 
-//     int *result = twoSum(numbers, numbersSize, target, &returnSize);
+//         for (int j = i + 1; j < pricesSize; ++j) {
+//             int sum = prices[j] - prices[i];
+//             if (sum > profit) profit = sum;
+//         }
 
-//     for (int i = 0; i < returnSize; i++) {
-//         printf("%d ", result[i]);
+
+//         if (profit > result) result = profit;
 //     }
-//     printf("\n");
-
-//     free(result);
-//     return 0;
+//     return result;
 // }
 
 int main(void){
 
-  char  firsts[] = "";
+    int  prices[] = {7,1,5,3,6,4};
 
-  scanf("%s", firsts);
-
-  printf("%s",firsts);
-
-
+    int result = maxProfit(prices, 6);
+    printf("%d\n", result);
+    return 0;
 }
