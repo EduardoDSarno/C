@@ -17,7 +17,6 @@
 typedef struct {
     struct sockaddr_in source;
     struct sockaddr_in destination;
-    struct tcphdr     *header;
 } ConnectionData;
 
 ConnectionData *connection_init(unsigned int src_port, uint32_t src_ipv4,
