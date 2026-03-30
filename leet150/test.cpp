@@ -1,78 +1,48 @@
 // g++ -o test test.cpp && ./test
 
-#include <algorithm>
-#include <cstdio>
+#include <cstddef>
 #include <iostream>
-#include <fstream>
 #include <string>
+#include <unordered_set>
 #include <vector>
 
 using namespace std;
 
-long long maximun_power(ifstream &file){
 
-    string line;
+class Solution {
+    public:
+        int lengthOfLongestSubstring(string s) {
+            
+           unordered_set<char>result;
+           size_t lenght = s.size();
 
-    // other var
-    long long n_monsters;
-    long long otter_combat_pw;
-    long long n_flip_flops;
-        
-    // getting other values, since they are in sequence we can use
-    // this stream extraction operator (that basically skips n/ and spaces)
-    // read the data from the stream (this case file) and put in the var
-    // matching their type
-    file >> n_monsters >> otter_combat_pw >> n_flip_flops;
+           int max = 0;
+           int count = 0;
 
-    vector<long long> monsters;
-    /* Create vec and sort monsters*/
-    for (int i = 0; i < n_monsters; i++){
-        long long monster_pw;
-        file >> monster_pw;
+           int left = 0;
 
-        monsters.push_back(monster_pw);
-    }
-    sort(monsters.begin(), monsters.end());
+           for (int right = 0 ; right < lenght; ++right){
 
-    // monsters power line
-    for (int i = 0; i < n_monsters; i++) {
-        
-        // if otter can beat monster
-        if(otter_combat_pw >= monsters[i]){
-
-            // we want to be greedy and get the most of the monster
-
-            // this will get us the used flip flops for this monster
-            // because the n of flipflops we will use has to  be <
-            // then the difference in pw and <= n of flipflops we have,
-            // so choose min 
-            long long flip_flop_used = min(otter_combat_pw - monsters[i], n_flip_flops);
-
-            monsters[i] +=  flip_flop_used;
-            n_flip_flops -= flip_flop_used;
-
-            otter_combat_pw += monsters[i];
+                while (result.count(s[right])) {
+                    result.erase(s[left]);
+                    left++;
+                }
+                result.insert(s[right]);
+                
+                count = (right - left)  + 1;
+                if(count > max) max = count;
+           }
+           return max;
         }
-    }
-    return otter_combat_pw;
+};
 
-}
-
-int main(){
-
-    ifstream file("codeforces/2209/input.txt");
-
-    if(!file.is_open()) {
-        cout << "Error opening file" << endl;
-        return 0;
-    }
-    // test cases count
-    int test_cases;
-    file >> test_cases;
-
-
-    for (int i = 0; i < test_cases; ++i) {
-        printf("%lld\n", maximun_power(file));   
-    }  
+int main(void){
+    Solution sol;
     
+    cout << sol.lengthOfLongestSubstring("abcabcbb") << endl;  // expected: 3
+    cout << sol.lengthOfLongestSubstring("bbbbb") << endl;     // expected: 1
+    cout << sol.lengthOfLongestSubstring("pwwkew") << endl;    // expected: 3
+    cout << sol.lengthOfLongestSubstring("") << endl;          // expected: 0
+    
+    return 0;
 }
