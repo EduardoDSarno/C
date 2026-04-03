@@ -22,7 +22,7 @@ void send_ack_packet(struct sockaddr_in source, struct sockaddr_in destination,
 struct tcphdr * listen_syn_package(){
     return listen_packet(TH_SYN);
 }
-
+uint8_t he= 0;
 /* This case we will just be printing connected, in reality we would start exahcnge data
    I might implement this later*/
 void listen_ack_package(){
