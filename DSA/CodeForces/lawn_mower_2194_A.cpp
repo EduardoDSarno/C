@@ -1,12 +1,11 @@
-// g++ -std=c++17 -DLOCAL -o test test.cpp && ./test
-
-/* Set up*/
 #include <cstdio>
 #include <iostream>
 
 using namespace std;
 
+
 int lawn_mower(long long  number_of_boards, long long  width_of_mower);
+
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -43,19 +42,14 @@ int lawn_mower(long long number_of_boards, long long width_of_mower)
 
     long long  result = 0;
 
-    while (number_of_boards != reminder) {
-        
-        number_of_boards -= width_of_mower;
-        result += max_removal;
+    long number_of_groups = number_of_boards / width_of_mower;
 
-    }
+    result = number_of_groups * max_removal;
+
     result += reminder;
     return result;
 
 }
-
-
-
 
 
 
