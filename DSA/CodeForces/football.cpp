@@ -33,7 +33,6 @@ void is_degerous(string t){
     char prev;
     for (char c : t) {
         c == prev ? count++ : count = 1;
-        cout << count << '\n';
         if(count >=7) break;
         prev = c;
     }
