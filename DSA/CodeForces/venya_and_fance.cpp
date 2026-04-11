@@ -55,7 +55,7 @@ void w(vector<int> ph, int p, int h){
         }
     }
 
-    cout << w;
+    cout << w << '\n';
 }
 
 
