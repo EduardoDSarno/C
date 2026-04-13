@@ -26,30 +26,27 @@ int main() {
     #endif
     
     // code
-    int n,ith;
 
-    cin >> n;
-    cin >> ith;
+    string hello;
+    cin >> hello;
 
-    string queue;
-    cin >> queue;
 
-    // first check if it will go out of bounds
-    
-    for(int i = 0; i < ith; ++i){
+    string hello2 = "hello";
+    string check_hello;
+    int i = 0;
 
-        // if there is a girls behind a boy swap them
-        for (int j = 0; j < n; j++) 
-        {
-            if(queue[j] == 'B' && queue[j + 1] == 'G'){
-
-                queue[j]     = 'G';
-                queue[j + 1] = 'B';
-                j++;
-            }
+    for (char c : hello) {
+        
+        if(c == hello2[i]){
+            check_hello.push_back(c);
+            i++;
         }
-
     }
-
-    cout << queue << '\n';
+    if(check_hello == "hello"){
+        cout << "YES" ;
+    }
+    else {
+        cout << "NO";
+    }
+    cout << '\n' ;
 }
