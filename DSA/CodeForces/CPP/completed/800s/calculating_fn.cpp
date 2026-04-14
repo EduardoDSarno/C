@@ -4,10 +4,10 @@
 #include <cstdio>
 #include <iostream>
 #include <ostream>
+#include <cmath>
 
 using namespace std;
 using ll = long long;
-
 int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
@@ -17,18 +17,15 @@ int main() {
     #endif
     
     // code
-    int tests;
-    cin >> tests;
+    ll n,sum;
 
-    int n,prev; 
-    int cnt = 0;
-    for (int i = 0 ; i < tests; ++i) {
-        
-        cin >> n;
+    cin >> n;
 
-        if(prev != n) cnt++;
-        
-        prev = n;
+    if(n % 2 == 0){
+        sum = n / 2;
     }
-    cout << cnt << '\n';
+    else {
+        sum = (ceil(n + 1) / 2) * -1;
+    }
+    cout << sum << '\n';
 }
