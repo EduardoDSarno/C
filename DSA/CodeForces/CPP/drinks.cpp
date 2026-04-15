@@ -27,22 +27,19 @@ int main() {
     #endif
     
     // code
-    vector<int> lucktN = {4,7,44,47,74,77,444,447,474,
-                        477,744,747,774,777};
+    double juices;
 
+    cin >> juices;
 
-    int t, f = 0;
-    cin >> t;
-    for (int i = 0; i < 14; i++) 
-    {
-        if(t % lucktN[i] == 0)
-        {
-              f = 1; 
-              break;
-        }
+    long double ml;
+    long double all_ml = 0.0;
+
+    for (int i = 0; i < juices; ++i) {
+        
+        cin >> ml;
+        all_ml +=ml;
     }
 
-    f == 1 ? cout << "YES" : cout << "NO";
-    cout << '\n';
+    cout << (all_ml / juices) << '\n';
     
 }
