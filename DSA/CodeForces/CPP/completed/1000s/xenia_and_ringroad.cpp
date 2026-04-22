@@ -4,7 +4,6 @@
 #include <cstdio>
 #include <iostream>
 #include <ostream>
-
 using namespace std;
 using ll = long long;
 
@@ -17,16 +16,16 @@ int main() {
     #endif
     
     // code
-    int n,m;
+    ll n,m;
 
     cin >> n >> m;
 
-    int count = 0;
-    int loc = 1;
+    ll count = 0;
+    ll loc = 1;
     
     for (int i = 0 ; i < m; ++i) {
     
-        int t;
+        ll t;
         cin >> t;
 
         // maths
