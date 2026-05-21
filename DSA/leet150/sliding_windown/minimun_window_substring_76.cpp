@@ -1,11 +1,8 @@
-#include <cctype>
+
 #include <climits>
-#include <cstdio>
-#include <cstring>
 #include <iostream>
 #include <string>
-#include <unordered_map>
-#include <unordered_set>
+
 
 using namespace std;
 class Solution 
@@ -13,9 +10,8 @@ class Solution
 public:
     string minWindow(string s, string t) 
     {
-        int left = 0,right = 0, min_windon = INT_MAX;
+        int left = 0,right = 0,best_left = 0, min_windon = INT_MAX;
         string result = "";
-        unordered_set<int> t_letters_idx;
 
         // cover both upper and lowercase
         int freqt[52]  = {0};
@@ -24,50 +20,48 @@ public:
         for (char c : t) 
         {
             increment_freq_array(c, freqt);
-            t_letters_idx.insert(charIndex(c));
         }
+
+        int required = 0;
+        for (int i = 0; i < 52; i++)
+        {
+            if (freqt[i] > 0) required++;
+        }
+        int formed = 0;
 
         while(right < s.size())
         {
-            int idx = charIndex(s[right]);
+            int idx_r = charIndex(s[right]);
  
-            freq2[idx]++; // insert
-            bool covers = true;
-            while(covers)
+            if (freqt[idx_r] > 0) 
             {
-            
-                // this loops hardcore checks if it is valid meaning all frequecnies in freqt
-                // are covered in freq2. Because if their count is bigger they are covered
-                for (int i: t_letters_idx)
-                {
-                    if (freq2[i] < freqt[i]) 
-                    { 
-                        covers = false;
-                        break; 
-                    }
-                }
-                if (!covers) break;
-                // if we cover all the characters, windown is valid
-                // so we shrink to find where it is the minimun valid
+                freq2[idx_r]++;
+                if (freq2[idx_r] == freqt[idx_r]) formed++;
+            }
+
+            while(formed == required)
+            {
                 int window = right - left + 1;
-                if(window < min_windon) 
+                if(window < min_windon)
                 {
                     min_windon = window;
-                    result = s.substr(left, min_windon);
-                    //cout << result << '\n';
+                    best_left = left;
                 }
-                // since we only insert in freq2 the character that are in t
-                // if they are not there we don't need to decrement
-                // making it follow the same rule
-                int idx = charIndex(s[left]);
-                if (freqt[idx] > 0) freq2[idx]--;
+
+                int idx_l = charIndex(s[left]);
+                if(freqt[idx_l] > 0)
+                {
+                    if(freq2[idx_l] == freqt[idx_l]) formed--;
+                    freq2[idx_l]--;
+                }
                 left++;
             }
+           
         
             right++;
         }
-        cout << result << '\n';
-        return result;
+
+        return min_windon == INT_MAX ? "" : s.substr(best_left, min_windon);
     }
     /* this is a helper to calcualte index for 52 item frequency array*/
     void increment_freq_array(char c, int *freq)
@@ -97,5 +91,5 @@ int main(void)
 
     Solution solution;
 
-    solution.minWindow(s, t);
+    cout << solution.minWindow(s, t);
 }
