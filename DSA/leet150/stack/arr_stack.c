@@ -58,3 +58,13 @@ int pop(Stack *stack)
     }
     return 1;
 }
+
+
+static inline void *char_to_ptr(char c)
+{
+    return (void *)(intptr_t)c;
+}
+static inline char ptr_to_char(void *p)
+{
+    return (char)(intptr_t)p;
+}

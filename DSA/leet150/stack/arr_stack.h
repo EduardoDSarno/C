@@ -13,5 +13,7 @@ typedef struct Stack
 Stack *new_stack(size_t max_size);
 int push(Stack *stack, void *value);
 int pop(Stack *stack);
+static inline char ptr_to_char(void *p);
+static inline void *char_to_ptr(char c);
 
 #endif
