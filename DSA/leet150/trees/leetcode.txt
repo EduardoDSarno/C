@@ -1,0 +1,56 @@
+#############
+QUestion 112
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct TreeNode
+{
+   int val;
+   struct TreeNode * right;
+   struct TreeNode * left;
+} TreeNode;
+
+int hasPathSum(struct TreeNode* root, int targetSum) 
+{
+    if (root == NULL) return 0;
+    if(root->left == NULL && root->right == NULL)
+    {
+        return root->val == targetSum;
+    }
+  
+
+    return hasPathSum(root->left, targetSum - root->val) ||
+       hasPathSum(root->right, targetSum - root->val);
+
+}
+
+
+##########
+Question 100
+
+#include <stdio.h>
+
+int main()
+{
+
+}
+
+typedef struct TreeNode
+{
+   int val;
+   struct TreeNode * right;
+   struct TreeNode * left;
+} TreeNode;
+
+int isSameTree(struct TreeNode* p, struct TreeNode* q) 
+{
+    // base case
+    if (p == NULL && q == NULL) return 1; 
+    if (p == NULL || q == NULL) return 0;
+
+    if(p->val != q->val) return 0;
+
+    return isSameTree(p->left, q->left) && isSameTree(q->right, p->right);
+
+}
